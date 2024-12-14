@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Central -Every Voice Counts</title>
+    <link rel="stylesheet" href="assets/css/theme.css">
+    <link rel="stylesheet" href="assets/fontawesome-free-6.6.0-web/css/all.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <div class="nav-bar">
+                <a href="dashboard.html" class="">
+                    PEOPLE'S PLATFORM 
+                </a>
+                <div class="nav">
+                    <a href="index.html">HOME</a>
+                    <a href="index.html">FAQ</a>
+                    <a href="php_includes/login.php" class="nav-cta">LOGIN</a>
+                    <a href="php_includes/register.php" class="nav-cta-outline">REGISTER N0W</a>
+                </div>
+            </div>
+            <div class="header-content main">
+                <h1>Together for a Better Tomorrow</span></h1>
+                <p>Take an active role in shaping your community! Your voice matters, and together, we can create positive change.</p>
+                <br>
+                <br>
+                <a href="php_includes/login.php" class="btn-outline">Commence</a>
+            </div>
+        </div>
+
+        <div class="section">
+            <br>
+            <div class="featured">
+                <div class="container">
+                    <br>
+                    <i class="fa fa-comment circle"></i>
+                    <h2>Propose Community Projects & Provide Feedback</h2>
+                    <p>Do you have a vision for enhancing your neighborhood or feedback on current initiatives? We want to hear your ideas! Your input can drive meaningful change.</p>
+                </div>
+                <div class="container">
+                    <br>
+                    <i class="fa fa-vote-yea circle"></i>
+                    <h2>Cast Your Vote on Community Initiatives</h2>
+                    <p>Make your voice count in local decision-making. Engage in the democratic process by supporting or expressing concerns about community projects. Empowering our community starts with your participation.</p>
+                </div>
+                <div class="container">
+                    <br>
+                    <i class="fa fa-users circle"></i>
+                    <h2>Join Town Halls & Share Your Concerns</h2>
+                    <p>Engage in meaningful discussions that shape policy, or report local issues impacting your everyday life. Together, we’re building a stronger, more inclusive community for all</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section stats">
+            <h2>Our Impact So Far</h2>
+            <p>Citizen Central thrives on active participation. Discover how your engagement has advanced our shared goals and contributed to meaningful community progress</p>
+            <div class="charts">
+                <!-- Pie Chart -->
+                <div class="chart-container">
+                    <canvas id="pieChart"></canvas>
+                </div>
+                <!-- Line Chart -->
+                <div class="chart-container">
+                    <canvas id="lineChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+        </div> 
+
+        <div class="section faq">
+            <div class="container">
+                <h2>Frequently Asked Questions</h2>
+                <ol class="faq-content">
+                    <h3><li>How Do I Take part?</li></h3>
+                    <p>Getting started is easy! Sign up for an account, explore active projects, and submit your ideas or feedback. Your opinion matters, and we’re here to make sure it’s heard.</p>
+
+                    <h3><li>How Is My Feedback Used?</li></h3>
+                    <p>Your feedback directly influences the direction of community projects. We take your suggestions seriously and work with local leaders to address your concerns and ideas.</p>
+
+                    <h3><li>Who Manages This Platform?</li></h3>
+                    <p>Citizen Central is a collaborative effort between community members and local government, aimed at fostering transparent and inclusive decision-making.</p>
+                </ol>
+            </div>
+        </div>       
+
+        <div class="section cta">
+            <a href="php_includes/login.php" class="btn">Take part</a>
+        </div>
+
+        <div class="footer container">
+            <p>Copyright &copy; 2024. All Rights Reserved.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Fetch data from the PHP script
+        fetch('php_includes/fetch.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error(data.error);
+                    return;
+                }
+    
+                // Data for the Pie Chart
+                const pieData = {
+                    labels: ['Projects Completed', 'Projects In-progress'],
+                    datasets: [{
+                        data: [data.projects.completedProjects, data.projects.ongoingProjects],
+                        backgroundColor: ['#6e5796', '#dcd4ec'], // Primary colors
+                        hoverBackgroundColor: ['#6e5796', '##dcd4ec'] // Primary colors
+                    }]
+                };
+    
+                // Data for the Line Chart
+                const engagementLabels = data.engagement.map(item => item.month);
+                const engagementCounts = data.engagement.map(item => item.engagementCount);
+    
+                const lineData = {
+                    labels: engagementLabels,
+                    datasets: [{
+                        label: 'User Engagement',
+                        data: engagementCounts,
+                        fill: false,
+                        borderColor: '#39285b', // Dark color for the line
+                        tension: 0.1
+                    }]
+                };
+    
+                // Data for the Bar Chart
+                const roleLabels = data.roles.map(item => item.role);
+                const roleCounts = data.roles.map(item => item.count);
+    
+                const barData = {
+                    labels: roleLabels,
+                    datasets: [{
+                        label: 'Number of Users',
+                        data: roleCounts,
+                        backgroundColor: '#dcd4ec', // Light color for bars
+                        borderColor: '#6f4eb0', // Primary_other for border color
+                        borderWidth: 1 // Optional: to enhance the visual
+                    }]
+                };
+    
+                // Create the charts
+                const ctxPie = document.getElementById('pieChart').getContext('2d');
+                const pieChart = new Chart(ctxPie, {
+                    type: 'pie',
+                    data: pieData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                        },
+                    },
+                });
+    
+                const ctxLine = document.getElementById('lineChart').getContext('2d');
+                const lineChart = new Chart(ctxLine, {
+                    type: 'line',
+                    data: lineData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                            },
+                            tooltip: {
+                                backgroundColor: '#6e5796', // Light primary color for tooltip
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: '#dcd4ec' // Light color for grid
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    color: '#dcd4ec' // Light color for grid
+                                }
+                            }
+                        }
+                    },
+                });
+    
+                const ctxBar = document.getElementById('barChart').getContext('2d');
+                const barChart = new Chart(ctxBar, {
+                    type: 'bar',
+                    data: barData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                            },
+                            tooltip: {
+                                backgroundColor: '#6e5796', // Light primary color for tooltip
+                            }
+                        },
+                    },
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>              
+</body>
+</html>
